@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.w3.org/1999/xhtml">
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <!--    <link rel="stylesheet" th:href="@{/css/bootstrap.min.css}"/>-->
+    <link rel="stylesheet" th:href="@{/css/bootstrap.min2.css}"/>
+    <link rel="stylesheet" th:href="@{/css/font-awesome.min.css}"/>
+    <link rel="stylesheet" th:href="@{/css/owl.carousel.min.css}"/>
+    <link rel="stylesheet" th:href="@{/css/slicknav.min.css}"/>
+    <link rel="stylesheet" th:href="@{/css/style.css}"/>
+    <header class="header-section clearfix">
+        <a href="index
+		.html" class="site-logo">
+            <img src="img/logo.png" alt="">
+        </a>
+        <div class="header-right">
+            <a href="#" class="hr-btn">Help</a>
+            <span>|</span>
+            <div class="user-panel">
+                <a href="" class="login">Login</a>
+                <a href="" class="register">Create an account</a>
+            </div>
+        </div>
+        <ul class="main-menu">
+            <li><a href="index
+				.html">Home</a></li>
+            <li><a href="#">About</a></li>
+            <li><a href="#">Pages</a>
+                <ul class="sub-menu">
+                    <li><a href="category.html">Category</a></li>
+                    <li><a href="playlist.html">Playlist</a></li>
+                    <li><a href="artist.html">Artist</a></li>
+                    <li><a href="blog.html">Blog</a></li>
+                    <li><a href="contact.html">Contact</a></li>
+                </ul>
+            </li>
+            <li><a href="blog.html">News</a></li>
+            <li><a href="contact.html">Contact</a></li>
+        </ul>
+    </header>
+</head>
+<body>
+<!-- MENU -->
+
+<!-- ABOUT -->
+<section class="about full-screen d-lg-flex justify-content-center align-items-center" id="about">
+    <div class="container" style=" margin: 5% auto;">
+        <div class="row">
+            <div class="col-lg-6 col-md-12 col-12 d-flex align-items-center">
+                <div class="login-wrapper my-auto col-lg-10 col-md-12 col-12">
+                    <h2 class="login-title">Log in</h2>
+                    <form th:action="@{/user/login}" th:object="${user}" method="post" class="form-group"
+                          style="max-width: 600px; margin: 10px auto;">
+                        <div class="form-group">
+                            <label for="email">Email</label>
+                            <input type="email" name="email" id="email" class="form-control"
+                                   placeholder="email@example.com">
+                        </div>
+                        <div class="form-group mb-4">
+                            <label for="password">Password</label>
+                            <input type="password" name="password" id="password" class="form-control"
+                                   placeholder="enter your passsword">
+                        </div>
+                        <button type="submit" class="btn btn-block btn-primary">Login</button>
+                    </form>
+                    <p class="login-wrapper-footer-text">Don't have an account? <a href=" " class="text-reset">Register
+                        here</a></p>
+                </div>
+            </div>
+
+            <div class="col-lg-6 col-md-12 col-12">
+                <div class="about-image svg">
+                    <img src="img/what-is-cloud-storage-intro-700x544.png" class="img-fluid" alt="svg image">
+                </div>
+            </div>
+
+        </div>
+    </div>
+</section>
+</body>
+</html>

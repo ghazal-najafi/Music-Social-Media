@@ -1,0 +1,95 @@
+<html xmlns:th="http://www.w3.org/1999/xhtml">
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Music Social Media</title>
+
+    <link rel="stylesheet" th:href="@{/css/header.css}">
+    <link rel="stylesheet" th:href="@{/css/style2.css}"/>
+    <link rel="stylesheet" th:href="@{/css/plugins.css}"/>
+
+</head>
+<body>
+<div class="hero user-hero">
+    <div class="container bodydirection">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="hero-ct">
+                    <h1>Music Social Media</h1>
+                    <ul class="breadcumb">
+                        <li class="active"><a href="">artists</a></li>
+                        <li><span class="ion-ios-arrow-left"></span>profile
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="buster-light">
+    <div class="page-single">
+        <div class="container">
+            <div class="row ipad-width">
+                <div class="col-md-3 col-md-3-c col-sm-12 col-xs-12 ">
+                    <div class="user-information">
+                        <div class="user-img">
+                            <!--                            <a href="#"><img loading="lazy" class="profile-height"-->
+                            <!--                                             th:src="img/user-img.png"><br></a>-->
+                            <!--                            <a class="redbtn"></a>-->
+                        </div>
+                        <div class="user-fav">
+                            <p>User Account</p>
+                            <ul>
+                                <li class="active"><a href="/profile">profile</a></li>
+                                <li><a href="/user/changePassword">change password</a></li>
+                                <li><a href="/logout">logout</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-8 col-md-8-c col-sm-12 col-xs-12 ">
+                    <div class="form-style-1 user-pro  margin-change-password">
+                        <form action="/user/edit" method="post" class="password">
+                            <div class="margin-change-password-h3">
+                                <h3>Edit Profile</h3>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6 col-md-6-c form-it input-icons inner-addon right-addon">
+                                    <i class="fa fa-user"></i>
+                                    <input type="text" name="firstName"
+                                           th:placeholder="${user.firstname}">
+                                </div>
+                                <div class="col-md-6 col-md-6-c form-it input-icons inner-addon right-addon">
+                                    <i class="fa fa-user"></i>
+                                    <input type="text" name="lastName"
+                                           th:placeholder="${user.lastname}">
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-6 col-md-6-c form-it input-icons inner-addon right-addon">
+                                    <i class="fa fa-user"></i>
+                                    <input type="text" readonly name="userName" th:placeholder="${user.username}">
+                                </div>
+                                <div class="col-md-6 col-md-6-c form-it input-icons inner-addon right-addon">
+                                    <i class="fa fa-envelope"></i>
+                                    <input type="email" readonly name="email" th:placeholder="${user.email}">
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-3">
+                                    <input class="submit" name="login-page" id="login-page" type="submit"
+                                           value="edit profile">
+                                </div>
+                                <input name="id" hidden th:value="${user.userID}">
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

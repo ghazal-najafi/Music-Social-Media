@@ -1,0 +1,102 @@
+@import url("https://fonts.googleapis.com/css?family=Roboto:300,400");
+body {
+  background: #eee;
+  font-family: Roboto;
+}
+
+#booking {
+  background: white;
+  margin: 2em auto;
+  padding: 2em;
+  box-shadow: 1px 10px 30px #cccccc;
+}
+#booking section {
+  margin: 2em auto;
+}
+#booking nav, #booking nav a {
+  background: none;
+  border: none;
+  box-shadow: none;
+  color: #555;
+  font-size: 1.1em;
+  font-weight: 300;
+  margin-bottom: -3em;
+}
+#booking h3 {
+  font-size: 1.6em;
+}
+#booking .profile {
+  position: relative;
+}
+#booking .profile img {
+  border-radius: 50%;
+  border: 5px solid #555;
+  width: 120px;
+  height: 120px;
+  box-shadow: 5px 10px 10px rgba(0, 0, 0, 0.1);
+}
+#booking .profile h2 {
+  margin: 0.5em 0;
+  padding-bottom: 0.5em;
+  text-transform: uppercase;
+  font-size: 1.6em;
+  font-weight: 400;
+  color: #555;
+}
+#booking .infos {
+  font-size: 0.7em;
+  color: #555;
+}
+#booking .infos h3 {
+  font-size: 1.6em;
+  margin: 0;
+  color: #888888;
+  text-align: center;
+}
+#booking .infos .table li {
+  display: inline-block;
+  list-style-type: none;
+  height: 100px;
+  vertical-align: middle;
+}
+#booking .infos .table li span {
+  font-size: 6.2em;
+  font-weight: 800;
+  margin: 0 0.9em;
+}
+#booking .infos .table li a {
+  color: #555;
+  font-size: 1.4em;
+  line-height: 6.2em;
+}
+#booking .date {
+  font-size: 0.7em;
+  font-weight: 300;
+}
+#booking .date #calendar {
+  font-size: 1.6rem;
+  cursor: pointer;
+}
+#booking .date input {
+  display: initial;
+  font-weight: bold;
+  text-transform: uppercase;
+  text-align: center;
+  font-size: 2.4em;
+  line-height: 0.5em;
+  margin: 0;
+  padding: 0;
+  color: #555;
+  border: none;
+  text-indent: 2em;
+  cursor: pointer;
+}
+#booking .date h3 {
+  color: #888888;
+  text-align: center;
+}
+
+.disabled i {
+  color: #d5d5d5;
+  cursor: default;
+}

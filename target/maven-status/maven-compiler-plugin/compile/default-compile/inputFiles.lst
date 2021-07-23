@@ -1,0 +1,12 @@
+/home/hp/IdeaProjects/SocialMedia/src/main/java/SpringBoot/SocialMedia/service/service.java
+/home/hp/IdeaProjects/SocialMedia/src/main/java/SpringBoot/SocialMedia/model/Album.java
+/home/hp/IdeaProjects/SocialMedia/src/main/java/SpringBoot/SocialMedia/repository/ArtistRepository.java
+/home/hp/IdeaProjects/SocialMedia/src/main/java/SpringBoot/SocialMedia/repository/LikeRepository.java
+/home/hp/IdeaProjects/SocialMedia/src/main/java/SpringBoot/SocialMedia/model/Artist.java
+/home/hp/IdeaProjects/SocialMedia/src/main/java/SpringBoot/SocialMedia/model/Media.java
+/home/hp/IdeaProjects/SocialMedia/src/main/java/SpringBoot/SocialMedia/controller/contrller.java
+/home/hp/IdeaProjects/SocialMedia/src/main/java/SpringBoot/SocialMedia/model/User.java
+/home/hp/IdeaProjects/SocialMedia/src/main/java/SpringBoot/SocialMedia/repository/UserRepository.java
+/home/hp/IdeaProjects/SocialMedia/src/main/java/SpringBoot/SocialMedia/repository/AlbumRepository.java
+/home/hp/IdeaProjects/SocialMedia/src/main/java/SpringBoot/SocialMedia/repository/MediaRepository.java
+/home/hp/IdeaProjects/SocialMedia/src/main/java/SpringBoot/SocialMedia/SocialMediaApplication.java
