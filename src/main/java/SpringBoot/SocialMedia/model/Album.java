@@ -21,6 +21,7 @@ public class Album {
     @OneToMany(mappedBy = "album", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<Media> contain = new ArrayList<>();
 
+
     public Album() {
 
     }
@@ -105,13 +106,15 @@ public class Album {
 
     @Override
     public String toString() {
-        return "album{" +
+        return "Album{" +
                 "albumID=" + albumID +
                 ", name='" + name + '\'' +
-                ", publishdate=" + publishDate +
+                ", publishDate='" + publishDate + '\'' +
                 ", score=" + score +
                 ", genre='" + genre + '\'' +
                 ", picture='" + picture + '\'' +
+                ", compiles=" + compiles +
+                ", contain=" + contain +
                 '}';
     }
 }

@@ -2,6 +2,7 @@ package SpringBoot.SocialMedia.controller;
 
 import SpringBoot.SocialMedia.model.*;
 import SpringBoot.SocialMedia.service.service;
+import org.dom4j.rule.Mode;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
@@ -13,30 +14,40 @@ import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
-import javax.validation.Valid;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
 
 @Controller
 public class SocialMediaController {
-    private static final String BASE_DIR = "src/main/resources/musics/";
-    private static final String ALBUM_IMG_DIR = "src/main/resources/uploads/";
+    private static final String BASE_DIR = "src/main/resources/static/music-files/";
+    private static final String ALBUM_IMG_DIR = "src/main/resources/static/uploads/";
 
     @Autowired
     private service service;
 
     //---------------------------index-----------------------------------------------------
     @GetMapping("/")
-    public String index() {
-        return "index";
+    public ModelAndView index(HttpServletRequest request) {
+        HttpSession session = request.getSession();
+        String userName = null;
+        Object userID = session.getAttribute("userID");
+        if (userID != null) {
+            System.out.println("kkk" + userID);
+            User user = service.getUser((Integer) userID);
+            userName = user.getUsername();
+        }
+
+        ModelAndView model = new ModelAndView();
+        model.addObject("userName", userName);
+        model.setViewName("index");
+        return model;
     }
 
     @GetMapping("/login")
@@ -49,6 +60,11 @@ public class SocialMediaController {
         return "signup";
     }
 
+    @GetMapping("/category")
+    public String category() {
+        return "category";
+    }
+
     //------------------------------album-------------------------------------------------------------------
     @PostMapping("/album/add")
     public ResponseEntity addAlbum(@RequestParam("file") MultipartFile file, @RequestParam("name") String name, @RequestParam("genre") String genre) throws IOException {
@@ -58,10 +74,11 @@ public class SocialMediaController {
         Path path = Paths.get(ALBUM_IMG_DIR + file.getOriginalFilename());
         Files.write(path, file.getBytes());
 
-        Album album = new Album(name, formatter.format(date), 0, genre, ALBUM_IMG_DIR + file.getOriginalFilename());
+        Album album = new Album(name, formatter.format(date), 0, genre, "static/uploads/" + file.getOriginalFilename());
+
         service.addAlbum(album);
 
-        return new ResponseEntity<>(HttpStatus.OK);
+        return new ResponseEntity<>(album, HttpStatus.OK);
     }
 
     @DeleteMapping("/album/delete/{id}")
@@ -83,29 +100,42 @@ public class SocialMediaController {
             album.setScore(score);
             album.setPublishDate(publishDate);
             service.updateAlbum(album);
-            return new ResponseEntity(HttpStatus.OK);
+            return new ResponseEntity(album, HttpStatus.OK);
         }
         return new ResponseEntity(HttpStatus.NO_CONTENT);
     }
 
     @GetMapping("/album/{id}")
-    public ModelAndView getAlbum(@PathVariable("id") int id) {
+    public ModelAndView getAlbum(@PathVariable("id") int id, HttpServletRequest request) {
+        HttpSession session = request.getSession();
+        String userName = (String) session.getAttribute("userName");
+
         ModelAndView model = new ModelAndView();
         Album album = service.getAlbum(id);
         System.out.println(album.toString());
 
+        List<Media> media = service.getMediaByAlbumID(id);
+        System.out.println(media.toString());
         model.addObject("album", album);
+        if (media.size() > 0)
+            model.addObject("media", media.get(0));
+        model.addObject("medias", media);
+        model.addObject("userName", userName);
         model.setViewName("album");
 
         return model;
     }
 
     @GetMapping("/albums")
-    public ModelAndView getAllAlbum() {
+    public ModelAndView getAllAlbum(HttpServletRequest request) {
+        HttpSession session = request.getSession();
+        String userName = (String) session.getAttribute("userName");
+
         ModelAndView model = new ModelAndView();
         List<Album> albums = service.getAllAlbum();
 
         model.addObject("albums", albums);
+        model.addObject("userName", userName);
         model.setViewName("albums");
         return model;
     }
@@ -120,9 +150,10 @@ public class SocialMediaController {
         Files.write(path, file.getBytes());
 
         if (service.findArtistNOTDuplicate(firstName, lastName, birthDate)) {
-            Artist artist = new Artist(firstName, lastName, ALBUM_IMG_DIR + file.getOriginalFilename(), biography, birthDate);
+            Artist artist = new Artist(firstName, lastName, "static/uploads/" + file.getOriginalFilename(), biography, birthDate);
+
             service.addArtist(artist);
-            return new ResponseEntity<>(HttpStatus.OK);
+            return new ResponseEntity<>(artist, HttpStatus.OK);
         } else
             return new ResponseEntity<>(HttpStatus.NOT_ACCEPTABLE);
     }
@@ -137,7 +168,7 @@ public class SocialMediaController {
         artist.setBirthdate(birthDate);
         boolean response = service.updateArtist(artist);
         if (response)
-            return new ResponseEntity<>(HttpStatus.OK);
+            return new ResponseEntity<>(artist, HttpStatus.OK);
         else
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
@@ -153,21 +184,29 @@ public class SocialMediaController {
 
     @GetMapping(path = "/artists")
     public @ResponseBody
-    ModelAndView getAllArtists() {
+    ModelAndView getAllArtists(HttpServletRequest request) {
+        HttpSession session = request.getSession();
+        String userName = (String) session.getAttribute("userName");
+
         ModelAndView model = new ModelAndView();
         List<Artist> artists = service.getAllArtist();
 
         model.addObject("artists", artists);
+        model.addObject("userName", userName);
         model.setViewName("artists");
         return model;
     }
 
     @GetMapping(path = "/artist/{id}")
-    public ModelAndView getArtist(@PathVariable("id") int id) {
+    public ModelAndView getArtist(@PathVariable("id") int id, HttpServletRequest request) {
+        HttpSession session = request.getSession();
+        String userName = (String) session.getAttribute("userName");
+
         ModelAndView model = new ModelAndView();
         Artist artist = service.getArtist(id);
 
         model.addObject("artist", artist);
+        model.addObject("userName", userName);
         model.setViewName("artist");
 
         return model;
@@ -176,26 +215,30 @@ public class SocialMediaController {
     //------------------------------media-------------------------------------------------------------------
 
     @RequestMapping("/media/getAll")
-    public ModelAndView getAllMedia() {
+    public ModelAndView getAllMedia(HttpServletRequest request) {
+        HttpSession session = request.getSession();
+        String userName = (String) session.getAttribute("userName");
+
         ModelAndView model = new ModelAndView();
         List<Media> medias = service.getAllMedia();
 
         model.addObject("medias", medias);
+        model.addObject("userName", userName);
         model.setViewName("medias");
         return model;
     }
 
-    @GetMapping("media/{id}")
+    @GetMapping("/media/{id}")
     public ModelAndView getMedia(HttpServletRequest request, @PathVariable int id) {
         HttpSession session = request.getSession();
         int viewCount = setView((Integer) session.getAttribute("userID"), id);
 
         ModelAndView model = new ModelAndView();
         Media media = service.getMedia(id);
-        System.out.println(media.toString());
 
         model.addObject("media", media);
         model.addObject("viewCount", viewCount);
+        model.addObject("userName", session.getAttribute("userName"));
         model.setViewName("media");
 
         return model;
@@ -224,17 +267,17 @@ public class SocialMediaController {
         List view = user.getViewMedia();
 //        view.add(media);
         user.setViewMedia(media);
-        service.updateUser(user);
+        service.addOrUpdateUser(user);
 
         return view.size();
     }
 
-    @GetMapping("media/download/{id}")
+    @GetMapping("/media/download/{id}")
     public ResponseEntity downloadMedia(@PathVariable int id) throws IOException {
         Media media = service.getMedia(id);
         String mediaName = media.getName();
 
-        Path path = Paths.get(BASE_DIR + mediaName);
+        Path path = Paths.get(BASE_DIR + media.getPath());
         String mimeType = Files.probeContentType(path);
         Resource resource = null;
         try {
@@ -252,9 +295,10 @@ public class SocialMediaController {
                 .body(resource);
     }
 
-    @PostMapping("media/upload")
-    public ResponseEntity addMedia(@RequestParam("file") MultipartFile file, @RequestParam("name") String name,
-                                   @RequestParam("genre") String genre) {
+    @PostMapping("/media/upload")
+    public ResponseEntity addMedia(@RequestParam("file") MultipartFile file, @RequestParam("albumName") String albumName,
+                                   @RequestParam("mediaName") String mediaName, @RequestParam("genre") String genre
+            , @RequestParam("artistID") int artistID) {
 
         if (file.isEmpty())
             return (ResponseEntity) ResponseEntity.noContent();
@@ -265,21 +309,28 @@ public class SocialMediaController {
             Path path = Paths.get(BASE_DIR + file.getOriginalFilename());
             Files.write(path, file.getBytes());
 
-            Album album = service.getAlbumByName(name);
+            Album album = service.getAlbumByName(albumName);
             if (album == null) {
                 System.out.println("The required media is not exists !!");
                 return new ResponseEntity(HttpStatus.NOT_FOUND);
             }
 
             Media uploadMedia = new Media();
-            uploadMedia.setName(file.getOriginalFilename());
+            uploadMedia.setName(mediaName);
             uploadMedia.setAlbum(album);
             uploadMedia.setLength((int) file.getSize());
             uploadMedia.setGenre(genre);
+            uploadMedia.setPath(file.getOriginalFilename());
 
             SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
             Date date = new Date();
             uploadMedia.setPublishDate(formatter.format(date));
+
+            Artist artist = service.getArtist(artistID);
+            System.out.println(artist.toString());
+            if (artist != null)
+                album.setCompiles(artist);
+
 
             service.addMedia(uploadMedia);
         } catch (IOException e) {
@@ -317,37 +368,75 @@ public class SocialMediaController {
     //------------------------------user-------------------------------------------------------------------
 
     @RequestMapping(value = "/user/signup")
-    public String registerUser(HttpServletRequest request, @RequestParam("username") String username,
-                               @RequestParam("email") String email, @RequestParam("password") String password) {
+    public ModelAndView registerUser(HttpServletRequest request, @RequestParam("username") String username,
+                                     @RequestParam("email") String email, @RequestParam("password") String password) {
+        ModelAndView model = new ModelAndView();
         User isExitUser = service.getUserByEmail(email);
         if (isExitUser == null) {
             User newUser = new User();
             newUser.setEmail(email);
             newUser.setPassword(password);
             newUser.setUsername(username);
-            service.addUser(newUser);
+            service.addOrUpdateUser(newUser);
 
             HttpSession session = request.getSession();
             session.setAttribute("userID", service.getUserByEmail(email).getUserID());
+            session.setAttribute("userName", username);
 
-            return "index";
+            model.addObject("userName", username);
+            model.setViewName("index");
+        }
+        model.setViewName("signup");
+        return model;
+    }
+
+    @PostMapping(value = "/rest/user/signup")
+    public ResponseEntity registerUserRest(HttpServletRequest request, @RequestParam("username") String username,
+                                           @RequestParam("email") String email, @RequestParam("password") String password) {
+        User isExitUser = service.getUserByEmail(email);
+        if (isExitUser == null) {
+            User newUser = new User();
+            newUser.setEmail(email);
+            newUser.setPassword(password);
+            newUser.setUsername(username);
+            service.addOrUpdateUser(newUser);
+
+            HttpSession session = request.getSession();
+            session.setAttribute("userID", service.getUserByEmail(email).getUserID());
+            session.setAttribute("userName", username);
+
+            return new ResponseEntity<>(newUser, HttpStatus.OK);
         } else {
             System.out.println("User Already exists!");
-            return "signup";
+            return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
         }
     }
 
     @RequestMapping(value = "/user/login")
-    public String loginUser(HttpServletRequest request) {
+    public ModelAndView loginUser(HttpServletRequest request) {
+        ModelAndView model = new ModelAndView();
+        User isExitUser = service.getUserByEmail(request.getParameter("email"));
+
+        if (isExitUser != null && isExitUser.getPassword().equals(request.getParameter("password"))) {
+            model.addObject("userName", isExitUser.getUsername());
+            model.setViewName("index");
+            return model;
+        }
+        model.setViewName("login");
+        return model;
+    }
+
+    @PostMapping(value = "/rest/user/login")
+    public ResponseEntity loginUserRest(HttpServletRequest request) {
         User isExitUser = service.getUserByEmail(request.getParameter("email"));
         if (isExitUser != null && isExitUser.getPassword().equals(request.getParameter("password"))) {
             HttpSession session = request.getSession();
             session.setAttribute("userID", isExitUser.getUserID());
-            return "index";
+            session.setAttribute("userName", isExitUser.getUsername());
+            return new ResponseEntity<>(isExitUser, HttpStatus.OK);
         } else
-            return "login";
+            return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
     }
-
 
     @GetMapping("/profile")
     public ModelAndView profile(HttpServletRequest request) {
@@ -356,9 +445,18 @@ public class SocialMediaController {
 
         ModelAndView model = new ModelAndView();
         model.addObject("user", user);
+        model.addObject("userName", user.getUsername());
         model.setViewName("profile");
-
         return model;
+    }
+
+    @GetMapping("/rest/profile")
+    public ResponseEntity profileRest(HttpServletRequest request) {
+        HttpSession session = request.getSession();
+        User user = service.getUser((Integer) session.getAttribute("userID"));
+        if (user != null)
+            return new ResponseEntity<>(user, HttpStatus.OK);
+        return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
     }
 
     @GetMapping("/user/changePassword")
@@ -368,47 +466,84 @@ public class SocialMediaController {
 
         ModelAndView model = new ModelAndView();
         model.addObject("user", user);
+        model.addObject("userName", user.getUsername());
         model.setViewName("changePassword");
         return model;
     }
 
-    @RequestMapping("/user/delete/{id}")
-    public ResponseEntity deleteUser(@PathVariable("id") int id) {
-        boolean response = service.deleteUser(id);
-        if (response)
-            return new ResponseEntity(HttpStatus.OK);
-        else
-            return new ResponseEntity(HttpStatus.NOT_FOUND);
-    }
-
-    @RequestMapping("user/edit")
-    public ResponseEntity updateUser(@RequestParam("id") int id, @RequestParam("firstName") String firstName, @RequestParam("lastName") String lastName) {
+    @RequestMapping("/user/edit")
+    public ModelAndView updateUser(@RequestParam("id") int id, @RequestParam("firstName") String firstName,
+                                   @RequestParam("lastName") String lastName, @RequestParam("biography") String biography) {
+        ModelAndView model = new ModelAndView();
         User user = service.getUser(id);
         if (user != null) {
             user.setFirstname(firstName);
             user.setLastname(lastName);
-            service.updateUser(user);
-            return new ResponseEntity(HttpStatus.OK);
+            user.setBiography(biography);
+            service.addOrUpdateUser(user);
+            model.addObject("userName", user.getUsername());
         }
-        return new ResponseEntity(HttpStatus.NOT_FOUND);
+        model.addObject("userName", null);
+        model.setViewName("profile");
+        return model;
     }
 
-    @RequestMapping("/user/changePassword")
-    public ResponseEntity changePassword(@RequestParam("id") int id, @RequestParam("currentPassword") String currentPassword, @RequestParam("password") String password,
-                                         @RequestParam("repeatNewPassword") String repeatNewPassword) {
+    @PutMapping("/rest/user/edit")
+    public ResponseEntity updateUserRest(@RequestParam("id") int id, @RequestParam("firstName") String firstName,
+                                         @RequestParam("lastName") String lastName, @RequestParam("biography") String biography) {
         User user = service.getUser(id);
+        if (user != null) {
+            user.setFirstname(firstName);
+            user.setLastname(lastName);
+            user.setBiography(biography);
+            service.addOrUpdateUser(user);
+            return new ResponseEntity<>(user, HttpStatus.OK);
+        }
+        return new ResponseEntity<>(null, HttpStatus.NO_CONTENT);
+    }
+
+    @RequestMapping("/changePassword")
+    public ModelAndView changePassword(HttpServletRequest request, @RequestParam("currentPassword") String currentPassword, @RequestParam("password") String password,
+                                       @RequestParam("repeatNewPassword") String repeatNewPassword) {
+        HttpSession session = request.getSession();
+        User user = service.getUser((Integer) session.getAttribute("userID"));
+        System.out.println(user.toString());
         if (user != null && user.getPassword().equals(currentPassword) && password.equals(repeatNewPassword)) {
             user.setPassword(password);
-            service.updateUser(user);
-            return new ResponseEntity(HttpStatus.OK);
+            service.addOrUpdateUser(user);
         }
-        return new ResponseEntity(HttpStatus.NO_CONTENT);
+        ModelAndView model = new ModelAndView();
+        model.setViewName("changePassword");
+        model.addObject("userName", user.getUsername());
+        return model;
     }
 
-    @RequestMapping("/user/getAll")
-    public String getAllUsers() {
-        System.out.println(service.getAllUser());
-        return "index";
+    @PutMapping("/rest/changePassword")
+    public ResponseEntity changePasswordRest(HttpServletRequest request, @RequestParam("currentPassword") String currentPassword, @RequestParam("password") String password,
+                                             @RequestParam("repeatNewPassword") String repeatNewPassword) {
+        HttpSession session = request.getSession();
+        User user = service.getUser((Integer) session.getAttribute("userID"));
+
+        if (user != null && user.getPassword().equals(currentPassword) && password.equals(repeatNewPassword)) {
+            user.setPassword(password);
+            service.addOrUpdateUser(user);
+            return new ResponseEntity<>(user, HttpStatus.OK);
+        }
+        return new ResponseEntity<>(null, HttpStatus.NO_CONTENT);
+    }
+
+    @GetMapping("/user/getAll")
+    public ResponseEntity getAllUsers() {
+        return new ResponseEntity<>(service.getAllUser(), HttpStatus.OK);
+    }
+
+    @DeleteMapping("/user/delete/{id}")
+    public ResponseEntity deleteUser(@PathVariable("id") int id) {
+        boolean response = service.deleteUser(id);
+        if (response)
+            return new ResponseEntity<>("user deleted successfully!", HttpStatus.OK);
+        return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
+
     }
 
     //------------------------------join table-------------------------------------------------------------------
@@ -418,29 +553,37 @@ public class SocialMediaController {
         User user = service.getUser((Integer) session.getAttribute("userID"));
 
         Media media = service.getMedia(id);
-//        List like = user.getLikeMedia();
-//        like.add(media);
         user.setLikeMedia(media);
-        System.out.println("add in list");
-        service.updateUser(user);
+        service.addOrUpdateUser(user);
 
         return "index";
     }
 
     @RequestMapping("/likedMedia")
-    public String getLikedMedia(HttpServletRequest request) {
+    public ModelAndView getLikedMedia(HttpServletRequest request) {
         HttpSession session = request.getSession();
         User user = service.getUser((Integer) session.getAttribute("userID"));
-        List like = user.getLikeMedia();
-        int start = 0, end = 0;
-        if (like.size() > 10) {
-            end = like.size();
-            start = like.size() - 10;
-        } else
-            end = like.size();
-        for (int i = start; i < end; i++)
-            System.out.println(like.get(i));
-        return "index";
+        List likes = user.getLikeMedia();
+        int start = 0, end = likes.size();
+        if (likes.size() > 10)
+            start = likes.size() - 10;
+
+        for (int i = start; i < end; i++) {
+            Media media = (Media) likes.get(i);
+            System.out.println(media.toString());
+            Album album = media.getAlbum();
+            System.out.println(album.toString());
+            List<Artist> artist = album.getCompiles();
+            System.out.println(artist.toString());
+        }
+
+
+//        List<Artist> artists = album.getCompiles
+
+        ModelAndView model = new ModelAndView();
+        model.addObject("likes", likes);
+        model.setViewName("likedMedia");
+        return model;
     }
 
     @RequestMapping("/view/{id}")
@@ -460,7 +603,7 @@ public class SocialMediaController {
 //        follow.add(artist);
 
         user.setFollowArtist(artist);
-        service.updateUser(user);
+        service.addOrUpdateUser(user);
         System.out.println("saved ");
 
         return "index";

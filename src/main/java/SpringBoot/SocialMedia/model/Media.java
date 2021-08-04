@@ -14,6 +14,7 @@ public class Media {
     private String genre;
     private int length;
     private String publishDate;
+    private String path;
 
     @ManyToMany(mappedBy = "likeMedia")
     private List<User> likes = new ArrayList<>();
@@ -29,12 +30,13 @@ public class Media {
 
     }
 
-    public Media(String name, int score, String genre, int length, String publishDate) {
+    public Media(String name, int score, String genre, int length, String publishDate, String path) {
         this.name = name;
         this.score = score;
         this.genre = genre;
         this.length = length;
         this.publishDate = publishDate;
+        this.path = path;
     }
 
     public Integer getMediaID() {
@@ -85,6 +87,15 @@ public class Media {
         this.length = length;
     }
 
+    public String getPath() {
+        return path;
+    }
+
+
+    public void setPath(String path) {
+        this.path = path;
+    }
+
     public List<User> getLikes() {
         return likes;
     }
@@ -103,23 +114,25 @@ public class Media {
             views.add(user);
     }
 
-    public SpringBoot.SocialMedia.model.Album getAlbum() {
+    public Album getAlbum() {
         return album;
     }
 
-    public void setAlbum(SpringBoot.SocialMedia.model.Album album) {
+    public void setAlbum(Album album) {
         this.album = album;
     }
 
     @Override
     public String toString() {
-        return "media{" +
-                "albumID=" + mediaID +
+        return "Media{" +
+                "mediaID=" + mediaID +
+                ", albumID=" + album.getAlbumID() +
                 ", name='" + name + '\'' +
-                ", publishdate='" + publishDate + '\'' +
                 ", score=" + score +
                 ", genre='" + genre + '\'' +
-                ", lenght=" + length +
+                ", length=" + length +
+                ", publishDate='" + publishDate + '\'' +
+                ", path='" + path + '\'' +
                 '}';
     }
 }

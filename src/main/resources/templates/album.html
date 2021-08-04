@@ -33,33 +33,22 @@
 
 <!-- Header section -->
 <header class="header-section clearfix">
-    <a href="index
-		.html" class="site-logo">
-        <img src="img/logo.png" alt="">
+    <a th:href="@{/}" class="site-logo">
+        <img th:src="@{/img/logo.png}" alt="">
     </a>
     <div class="header-right">
-        <a href="#" class="hr-btn">Help</a>
-        <span>|</span>
         <div class="user-panel">
-            <a href="" class="login">Login</a>
-            <a href="" class="register">Create an account</a>
+            <a th:href="@{/login}" class="login" th:text="${userName} ?: 'Login'"></a>
+            <span>|</span>
+            <a th:href="@{/signup}" class="register">Create an account</a>
         </div>
     </div>
     <ul class="main-menu">
-        <li><a href="index
-				.html">Home</a></li>
-        <li><a href="#">About</a></li>
-        <li><a href="#">Pages</a>
-            <ul class="sub-menu">
-                <li><a href="category.html">Category</a></li>
-                <li><a href="playlist.html">Playlist</a></li>
-                <li><a href="artist.html">Artist</a></li>
-                <li><a href="blog.html">Blog</a></li>
-                <li><a href="contact.html">Contact</a></li>
-            </ul>
-        </li>
-        <li><a href="blog.html">News</a></li>
-        <li><a href="contact.html">Contact</a></li>
+        <li><a th:href="@{/}">Home</a></li>
+        <li><a th:href="@{/albums}">Albums</a></li>
+        <li><a th:href="@{/medias}">Playlist</a></li>
+        <li><a th:href="@{/artists}">Artists</a></li>
+        <li><a th:href="@{/likedMedia}">Favourite</a></li>
     </ul>
 </header>
 <!-- Header section end -->
@@ -79,7 +68,7 @@
                 <div class="col-lg-8">
                     <div class="wave-player-info">
                         <h2 th:text="${album.name}"></h2>
-                        <p>One Night in Ibiza</p>
+                        <p th:text="${media.name}"></p>
                     </div>
                 </div>
                 <div class="col-lg-4">
@@ -115,27 +104,29 @@
                 <div class="row">
                     <div class="col-lg-6">
                         <div class="song-details-box">
-                            <h3>About the Artist</h3>
+                            <h3>About the Album</h3>
                             <div class="artist-details">
-                                <img src="img/artist.jpg" alt="">
+                                <img th:src="${album.picture}" alt="">
                                 <div class="ad-text">
                                     <h5 th:text="${album.name}"></h5>
+                                </div>
+                                <div class="ad-text">
+                                    <h5 th:text="${album.genre}"></h5>
                                 </div>
                             </div>
                         </div>
                     </div>
                     <div class="col-lg-6">
                         <div class="song-details-box">
-                            <h3>Song Details</h3>
+                            <h3>Media Details</h3>
                             <!-- song -->
-                            <div class="song-item">
+                            <div th:each="media : ${medias}" class="song-item">
                                 <div class="row">
                                     <div class="col-xl-5 col-lg-12 col-md-5">
                                         <div class="song-info-box">
                                             <img src="img/songs/1.jpg" alt="">
                                             <div class="song-info">
-                                                <h4>Jennifer Brown</h4>
-                                                <p>One Night in Ibiza</p>
+                                                <h4 th:text="${media.name}"></h4>
                                             </div>
                                         </div>
                                     </div>
@@ -173,13 +164,6 @@
                                                             </div>
                                                         </div>
                                                     </div>
-                                                    <div class="jp-no-solution">
-                                                        <span>Update Required</span>
-                                                        To play the media you will need to either update your browser to
-                                                        a recent version or update your <a
-                                                            href="http://get.adobe.com/flashplayer/" target="_blank">Flash
-                                                        plugin</a>
-                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
@@ -187,64 +171,6 @@
                                 </div>
                             </div>
                             <!-- song -->
-                            <div class="song-item">
-                                <div class="row">
-                                    <div class="col-xl-5 col-lg-12 col-md-5">
-                                        <div class="song-info-box">
-                                            <img src="img/songs/2.jpg" alt="">
-                                            <div class="song-info">
-                                                <h4>Michael Smith</h4>
-                                                <p>Dream in colors</p>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="col-xl-7 col-lg-12 col-md-7">
-                                        <div class="single_player_container">
-                                            <div class="single_player">
-                                                <div class="jp-jplayer jplayer" data-ancestor=".jp_container_2"
-                                                     data-url="music-files/2.mp3"></div>
-                                                <div class="jp-audio jp_container_2" role="application"
-                                                     aria-label="media player">
-                                                    <div class="jp-gui jp-interface">
-
-                                                        <!-- Player Controls -->
-                                                        <div class="player_controls_box">
-                                                            <button class="jp-prev player_button" tabindex="0"></button>
-                                                            <button class="jp-play player_button" tabindex="0"></button>
-                                                            <button class="jp-next player_button" tabindex="0"></button>
-                                                            <button class="jp-stop player_button" tabindex="0"></button>
-                                                        </div>
-                                                        <!-- Progress Bar -->
-                                                        <div class="player_bars">
-                                                            <div class="jp-progress">
-                                                                <div class="jp-seek-bar">
-                                                                    <div>
-                                                                        <div class="jp-play-bar">
-                                                                            <div class="jp-current-time" role="timer"
-                                                                                 aria-label="time">0:00
-                                                                            </div>
-                                                                        </div>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                            <div class="jp-duration ml-auto" role="timer"
-                                                                 aria-label="duration">00:00
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                    <div class="jp-no-solution">
-                                                        <span>Update Required</span>
-                                                        To play the media you will need to either update your browser to
-                                                        a recent version or update your <a
-                                                            href="http://get.adobe.com/flashplayer/" target="_blank">Flash
-                                                        plugin</a>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
                         </div>
                     </div>
                 </div>

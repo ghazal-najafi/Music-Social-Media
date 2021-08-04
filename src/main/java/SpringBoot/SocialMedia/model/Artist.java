@@ -22,6 +22,7 @@ public class Artist {
     @JoinTable(name = "compiles", joinColumns = @JoinColumn(name = "artistID"), inverseJoinColumns = @JoinColumn(name = "albumID"))
     private List<Album> compileAlbum = new ArrayList<>();
 
+
     public Artist() {
 
     }
@@ -101,6 +102,7 @@ public class Artist {
     }
 
 
+
     @Override
     public String toString() {
         return "artist{" +
@@ -109,7 +111,7 @@ public class Artist {
                 ", lastname='" + lastname + '\'' +
                 ", picture='" + picture + '\'' +
                 ", biography='" + biography + '\'' +
-                ", birthdate=" + birthdate +
+                ", birthdate='" + birthdate + '\'' +
                 '}';
     }
 }

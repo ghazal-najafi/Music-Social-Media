@@ -57,13 +57,12 @@ public class service {
             return null;
     }
 
-    public ResponseEntity addAlbum(Album resource) {
-        if (resource.getAlbumID() == null) {
-            System.out.println(resource);
-            albumRepository.save(resource);
-            return new ResponseEntity(HttpStatus.OK);
+    public boolean addAlbum(Album album) {
+        if (album.getAlbumID() == null) {
+            albumRepository.save(album);
+            return true;
         } else
-            return new ResponseEntity(HttpStatus.NOT_FOUND);
+            return false;
     }
 
     public boolean deleteAlbum(Integer id) {
@@ -140,14 +139,12 @@ public class service {
         }
     }
 
+    public List<Media> getMediaByAlbumID(int id) {
+        var medias = (List<Media>) mediaRepository.findByAlbumID(id);
+        return medias;
+    }
+
     public void addMedia(Media media) {
-//        if (media.getMediaID() == null) {
-//            System.out.println(media);
-//            mediaRepository.save(media);
-//            return new ResponseEntity(HttpStatus.OK);
-//        } else {
-//            return new ResponseEntity(HttpStatus.NOT_FOUND);
-//        }
         if (media != null)
             mediaRepository.save(media);
     }
@@ -197,15 +194,8 @@ public class service {
         }
     }
 
-
-    public ResponseEntity addUser(User resource) {
-        if (resource.getUserID() == null) {
-            System.out.println(resource);
-            userRepository.save(resource);
-            return new ResponseEntity(HttpStatus.OK);
-        } else {
-            return new ResponseEntity(HttpStatus.NOT_FOUND);
-        }
+    public void addOrUpdateUser(User user) {
+        userRepository.save(user);
     }
 
     public boolean deleteUser(int id) {
@@ -215,21 +205,6 @@ public class service {
             return true;
         } else
             return false;
-    }
-
-    public void updateUser(User user) {
-        if (user.getUserID() == null)
-            userRepository.save(user);
-        else {
-            Optional<User> existingUser = userRepository.findById(user.getUserID());
-            if (existingUser.isPresent()) {
-                User newUser = existingUser.get();
-                newUser.setFirstname(user.getFirstname());
-                newUser.setLastname(user.getLastname());
-                newUser.setPassword(user.getPassword());
-                userRepository.save(newUser);
-            }
-        }
     }
 
     public User getUserByEmail(String email) {
