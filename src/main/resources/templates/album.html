@@ -58,8 +58,8 @@
     <div class="player-box">
         <div class="tarck-thumb-warp">
             <div class="tarck-thumb">
-                <img th:src="${album.picture}" alt="">
-                <!--                <img src="img/wave-thumb.jpg" alt="">-->
+                <!--                <img src="uploads/5.jpg" th:src="@{album.picture}" alt="">-->
+                <img src="img/wave-thumb.jpg" th:src="@{img/wave-thumb.jpg}" alt=""/>
                 <!--                <button onclick="wavesurfer.playPause();" class="wp-play"></button>-->
             </div>
         </div>
@@ -68,8 +68,9 @@
                 <div class="col-lg-8">
                     <div class="wave-player-info">
                         <h2 th:text="${album.name}"></h2>
-                        <p th:text="${media.name}"></p>
-                    </div>
+                        <a th:href="@{/artist/get/{artist.artistID}(artist.artistID=${artist.artistID})}"><p
+                                th:text="${artist.firstname} + ' ' + ${artist.lastname}"></p>
+                        </a></div>
                 </div>
                 <div class="col-lg-4">
                     <div class="songs-links">
@@ -111,7 +112,7 @@
                                     <h5 th:text="${album.name}"></h5>
                                 </div>
                                 <div class="ad-text">
-                                    <h5 th:text="${album.genre}"></h5>
+                                    <p th:text="${album.genre}"></p>
                                 </div>
                             </div>
                         </div>
@@ -153,14 +154,15 @@
                                                                     <div>
                                                                         <div class="jp-play-bar">
                                                                             <div class="jp-current-time" role="timer"
-                                                                                 aria-label="time">0:00
+                                                                                 aria-label="time">
                                                                             </div>
                                                                         </div>
                                                                     </div>
                                                                 </div>
                                                             </div>
-                                                            <div class="jp-duration ml-auto" role="timer"
+                                                            <div class="ml-auto" role="timer"
                                                                  aria-label="duration">00:00
+                                                                <p th:text="${media.length}"></p>
                                                             </div>
                                                         </div>
                                                     </div>

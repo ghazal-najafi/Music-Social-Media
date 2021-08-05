@@ -60,9 +60,10 @@
         <div class="row">
             <div th:each="album : ${albums}" class="col-xl-3 col-sm-6">
                 <div class="similar-song">
-                    <img th:href="@{/album/{album.albumID}(album.albumID=${album.albumID})}" class="ss-thumb"
+                    <img th:href="@{/album/get/{album.albumID}(album.albumID=${album.albumID})}" class="ss-thumb"
                          th:src="${album.picture}" alt="">
-                    <a th:href="@{/album/{album.albumID}(album.albumID=${album.albumID})}"><h4
+                    <a style="text-align: center"
+                       th:href="@{/album/get/{album.albumID}(album.albumID=${album.albumID})}"><h4
                             th:text="${album.name}"></h4></a>
                 </div>
             </div>

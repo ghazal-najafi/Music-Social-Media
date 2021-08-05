@@ -1,5 +1,5 @@
-<html xmlns:th="http://www.w3.org/1999/xhtml">
 <!DOCTYPE html>
+<html xmlns:th="http://www.w3.org/1999/xhtml">
 <html lang="zxx">
 <head>
     <title>Music Social Media</title>
@@ -59,8 +59,10 @@
         <div class="row">
             <div th:each="artist : ${artists}" class="col-xl-3 col-sm-6">
                 <div class="similar-song">
-                    <img th:href="@{/artist/{artist.artistID}(artist.artistID=${artist.artistID})}" class="ss-thumb" th:src="${artist.picture}" alt="">
-                    <a th:href="@{/artist/{artist.artistID}(artist.artistID=${artist.artistID})}"><h4 th:text="${artist.firstname} + ${artist.lastname}"></h4></a>
+                    <img th:href="@{/artist/get/{artist.artistID}(artist.artistID=${artist.artistID})}" class="ss-thumb"
+                         th:src="${artist.picture}" alt="">
+                    <a style="text-align: center" th:href="@{/artist/get/{artist.artistID}(artist.artistID=${artist.artistID})}"><h4
+                            th:text="${artist.firstname} + ' ' + ${artist.lastname}"></h4></a>
                 </div>
             </div>
         </div>

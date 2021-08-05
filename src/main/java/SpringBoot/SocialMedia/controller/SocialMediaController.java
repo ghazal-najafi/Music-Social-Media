@@ -2,7 +2,6 @@ package SpringBoot.SocialMedia.controller;
 
 import SpringBoot.SocialMedia.model.*;
 import SpringBoot.SocialMedia.service.service;
-import org.dom4j.rule.Mode;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
@@ -20,6 +19,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -67,14 +67,15 @@ public class SocialMediaController {
 
     //------------------------------album-------------------------------------------------------------------
     @PostMapping("/album/add")
-    public ResponseEntity addAlbum(@RequestParam("file") MultipartFile file, @RequestParam("name") String name, @RequestParam("genre") String genre) throws IOException {
+    public ResponseEntity addAlbum(@RequestParam("file") MultipartFile file, @RequestParam("name") String name,
+                                   @RequestParam("genre") String genre) throws IOException {
         SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
         Date date = new Date();
 
         Path path = Paths.get(ALBUM_IMG_DIR + file.getOriginalFilename());
         Files.write(path, file.getBytes());
 
-        Album album = new Album(name, formatter.format(date), 0, genre, "static/uploads/" + file.getOriginalFilename());
+        Album album = new Album(name, formatter.format(date), 0, genre, "uploads/" + file.getOriginalFilename());
 
         service.addAlbum(album);
 
@@ -85,7 +86,7 @@ public class SocialMediaController {
     public ResponseEntity deleteAlbum(@PathVariable("id") int id) {
         boolean flag = service.deleteAlbum(id);
         if (flag)
-            return new ResponseEntity<>(HttpStatus.OK);
+            return new ResponseEntity<>("album deleted successfully!", HttpStatus.OK);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
@@ -108,19 +109,15 @@ public class SocialMediaController {
     @GetMapping("/album/{id}")
     public ModelAndView getAlbum(@PathVariable("id") int id, HttpServletRequest request) {
         HttpSession session = request.getSession();
-        String userName = (String) session.getAttribute("userName");
-
         ModelAndView model = new ModelAndView();
         Album album = service.getAlbum(id);
-        System.out.println(album.toString());
 
-        List<Media> media = service.getMediaByAlbumID(id);
-        System.out.println(media.toString());
+        List<Media> medias = service.getMediaByAlbumID(id);
+        if (medias.size() > 0)
+            model.addObject("media", medias.get(0));
+        model.addObject("medias", medias);
         model.addObject("album", album);
-        if (media.size() > 0)
-            model.addObject("media", media.get(0));
-        model.addObject("medias", media);
-        model.addObject("userName", userName);
+        model.addObject("userName", session.getAttribute("userName"));
         model.setViewName("album");
 
         return model;
@@ -129,15 +126,25 @@ public class SocialMediaController {
     @GetMapping("/albums")
     public ModelAndView getAllAlbum(HttpServletRequest request) {
         HttpSession session = request.getSession();
-        String userName = (String) session.getAttribute("userName");
 
         ModelAndView model = new ModelAndView();
         List<Album> albums = service.getAllAlbum();
 
         model.addObject("albums", albums);
-        model.addObject("userName", userName);
+        model.addObject("userName", session.getAttribute("userName"));
         model.setViewName("albums");
         return model;
+    }
+
+    @GetMapping("/rest/album/get/{id}")
+    public ResponseEntity getAlbumRest(@PathVariable("id") int id) {
+        Album album = service.getAlbum(id);
+        return new ResponseEntity(album, HttpStatus.OK);
+    }
+
+    @GetMapping("/rest/albums")
+    public ResponseEntity getAllAlbumRest() {
+        return new ResponseEntity(service.getAllAlbum(), HttpStatus.OK);
     }
 
     //------------------------------artist-------------------------------------------------------------------
@@ -150,15 +157,14 @@ public class SocialMediaController {
         Files.write(path, file.getBytes());
 
         if (service.findArtistNOTDuplicate(firstName, lastName, birthDate)) {
-            Artist artist = new Artist(firstName, lastName, "static/uploads/" + file.getOriginalFilename(), biography, birthDate);
-
+            Artist artist = new Artist(firstName, lastName, "uploads/" + file.getOriginalFilename(), biography, birthDate);
             service.addArtist(artist);
             return new ResponseEntity<>(artist, HttpStatus.OK);
         } else
             return new ResponseEntity<>(HttpStatus.NOT_ACCEPTABLE);
     }
 
-    @PostMapping("/artist/update/{id}")
+    @PutMapping("/artist/update/{id}")
     public ResponseEntity UpdateArtist(@PathVariable("id") int id, @RequestParam("firstName") String firstName, @RequestParam("lastName") String lastName,
                                        @RequestParam("biography") String biography, @RequestParam("birthDate") String birthDate) {
         Artist artist = service.getArtist(id);
@@ -173,40 +179,55 @@ public class SocialMediaController {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 
-    @PostMapping("/artist/delete/{id}")
+    @DeleteMapping("/artist/delete/{id}")
     public ResponseEntity deleteArtist(@PathVariable("id") int id) {
         boolean response = service.deleteArtist(id);
         if (response)
-            return new ResponseEntity<>(HttpStatus.OK);
+            return new ResponseEntity<>("artist deleted successfully!", HttpStatus.OK);
         else
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    }
+
+    @GetMapping(path = "/rest/artists")
+    public ResponseEntity getAllArtistsRest() {
+        List<Artist> artists = service.getAllArtist();
+        return new ResponseEntity<>(artists, HttpStatus.OK);
+    }
+
+
+    @GetMapping(path = "/rest/artist/get/{id}")
+    public ResponseEntity getArtistRest(@PathVariable("id") int id) {
+        Artist artist = service.getArtist(id);
+        if (artist != null)
+            return new ResponseEntity<>(artist, HttpStatus.OK);
+        return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
     }
 
     @GetMapping(path = "/artists")
     public @ResponseBody
     ModelAndView getAllArtists(HttpServletRequest request) {
         HttpSession session = request.getSession();
-        String userName = (String) session.getAttribute("userName");
 
         ModelAndView model = new ModelAndView();
         List<Artist> artists = service.getAllArtist();
 
         model.addObject("artists", artists);
-        model.addObject("userName", userName);
+        model.addObject("userName", session.getAttribute("userName"));
         model.setViewName("artists");
         return model;
     }
 
-    @GetMapping(path = "/artist/{id}")
+    @GetMapping(path = "/artist/get/{id}")
     public ModelAndView getArtist(@PathVariable("id") int id, HttpServletRequest request) {
         HttpSession session = request.getSession();
-        String userName = (String) session.getAttribute("userName");
 
         ModelAndView model = new ModelAndView();
         Artist artist = service.getArtist(id);
+        List<Album> albums = artist.getCompileAlbum();
 
         model.addObject("artist", artist);
-        model.addObject("userName", userName);
+        model.addObject("albums", albums);
+        model.addObject("userName", session.getAttribute("userName"));
         model.setViewName("artist");
 
         return model;
@@ -214,18 +235,28 @@ public class SocialMediaController {
 
     //------------------------------media-------------------------------------------------------------------
 
-    @RequestMapping("/media/getAll")
+    @GetMapping("/medias")
     public ModelAndView getAllMedia(HttpServletRequest request) {
         HttpSession session = request.getSession();
-        String userName = (String) session.getAttribute("userName");
 
         ModelAndView model = new ModelAndView();
         List<Media> medias = service.getAllMedia();
+        List<Media> topMedia = new ArrayList<>();
 
+        if (medias.size() > 3)
+            for (int i = 0; i < 3; i++)
+                topMedia.add(medias.remove(0));
+
+        model.addObject("topMedias", topMedia);
         model.addObject("medias", medias);
-        model.addObject("userName", userName);
-        model.setViewName("medias");
+        model.addObject("userName", session.getAttribute("userName"));
+        model.setViewName("playlist");
         return model;
+    }
+
+    @GetMapping("/rest/media/getAll")
+    public ResponseEntity getAllMediaRest() {
+        return new ResponseEntity<>(service.getAllMedia(), HttpStatus.OK);
     }
 
     @GetMapping("/media/{id}")
@@ -244,15 +275,15 @@ public class SocialMediaController {
         return model;
     }
 
-    @GetMapping("/get/media/{id}")
+    @GetMapping("/rest/media/get/{id}")
     public ResponseEntity getMediaRest(@PathVariable int id, HttpServletRequest request) {
         HttpSession session = request.getSession();
         int viewCount = setView((Integer) session.getAttribute("userID"), id);
+        System.out.println("view count: " + viewCount);
 
         Media media = service.getMedia(id);
-        System.out.println("media: " + media.toString());
         if (media == null)
-            return new ResponseEntity(HttpStatus.NOT_FOUND);
+            return new ResponseEntity(null, HttpStatus.NOT_FOUND);
 
         return ResponseEntity.ok()
                 .contentType(MediaType.parseMediaType("application/json"))
@@ -262,11 +293,7 @@ public class SocialMediaController {
 
     public int setView(int userID, int mediaID) {
         User user = service.getUser(userID);
-        Media media = service.getMedia(mediaID);
-
         List view = user.getViewMedia();
-//        view.add(media);
-        user.setViewMedia(media);
         service.addOrUpdateUser(user);
 
         return view.size();
@@ -347,7 +374,7 @@ public class SocialMediaController {
         return new ResponseEntity(HttpStatus.NO_CONTENT);
     }
 
-    @RequestMapping("/media/update/{id}")
+    @PutMapping("/media/update/{id}")
     public ResponseEntity updateMedia(@PathVariable("id") int id, @RequestParam("score") int score,
                                       @RequestParam("name") String name, @RequestParam("genre") String genre,
                                       @RequestParam("length") int length, @RequestParam("publishDate") String publishDate) {

@@ -58,20 +58,20 @@
 <!-- Songs section  -->
 <section class="songs-section">
     <div class="container">
-        <div>
-
+        <div style="margin-top:50px;margin-bottom:20px">
+            <h3>Liked Media</h3>
         </div>
         <!-- song -->
-        <div th:each="like : ${likes}" class="song-item">
+
+        <div th:each="media : ${medias}" class="song-item">
             <div class="row">
                 <div class="col-lg-4">
                     <div class="song-info-box">
                         <img src="img/songs/1.jpg" alt="">
                         <div class="song-info">
-                            <a th:href="@{/artist/{artist.artistID}(artist.artistID=${artist.artistID})}">
-                                <h4 th:text="${artist.firstname} + ${artist.lastname}"></h4></a>
-                            <a th:href="@{/media/{media.mediaID}(media.mediaID=${media.mediaID})}"><p th:text="
-                               ${media.name}"></p></a>
+                            <!--                            <a th:href="@{/artist/{artist.artistID}(artist.artistID=${artist.artistID})}">-->
+                            <!--                                <h4 th:text="${artist.firstname} + ${artist.lastname}"></h4></a>-->
+                            <a><p th:text="${media.name}"></p></a>
                         </div>
                     </div>
                 </div>
