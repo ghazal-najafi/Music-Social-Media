@@ -65,10 +65,10 @@
         </div>
         <div class="wave-player-warp">
             <div class="row">
-                <div class="col-lg-8">
+                <div th:each="artist : ${artists}" class="col-lg-8">
                     <div class="wave-player-info">
                         <h2 th:text="${album.name}"></h2>
-                        <a th:href="@{/artist/get/{artist.artistID}(artist.artistID=${artist.artistID})}"><p
+                        <a th:href="@{/artist/get/{artistID}(artistID=${artist.artistID})}"><p
                                 th:text="${artist.firstname} + ' ' + ${artist.lastname}"></p>
                         </a></div>
                 </div>
@@ -114,6 +114,9 @@
                                 <div class="ad-text">
                                     <p th:text="${album.genre}"></p>
                                 </div>
+                                <div class="ad-text">
+                                    <p th:text="${album.publishDate}"></p>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -127,7 +130,8 @@
                                         <div class="song-info-box">
                                             <img src="img/songs/1.jpg" alt="">
                                             <div class="song-info">
-                                                <h4 th:text="${media.name}"></h4>
+                                                <a th:href="@{/media/{mediaID}(mediaID=${media.mediaID})}">
+                                                    <h4 th:text="${media.name}"></h4></a>
                                             </div>
                                         </div>
                                     </div>
@@ -161,7 +165,7 @@
                                                                 </div>
                                                             </div>
                                                             <div class="ml-auto" role="timer"
-                                                                 aria-label="duration">00:00
+                                                                 aria-label="duration">
                                                                 <p th:text="${media.length}"></p>
                                                             </div>
                                                         </div>

@@ -12,7 +12,7 @@ public class Media {
     private String name;
     private int score;
     private String genre;
-    private int length;
+    private String length;
     private String publishDate;
     private String path;
 
@@ -30,7 +30,7 @@ public class Media {
 
     }
 
-    public Media(String name, int score, String genre, int length, String publishDate, String path) {
+    public Media(String name, int score, String genre, String length, String publishDate, String path) {
         this.name = name;
         this.score = score;
         this.genre = genre;
@@ -79,11 +79,11 @@ public class Media {
         this.genre = genre;
     }
 
-    public int getLength() {
+    public String getLength() {
         return length;
     }
 
-    public void setLength(int length) {
+    public void setLength(String length) {
         this.length = length;
     }
 

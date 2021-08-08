@@ -1,8 +1,8 @@
-<html xmlns:th="http://www.w3.org/1999/xhtml">
 <!DOCTYPE html>
+<html xmlns:th="http://www.w3.org/1999/xhtml">
 <html lang="zxx">
 <head>
-    <title>Music Social Media</title>
+    <title>SolMusic | HTML Template</title>
     <meta charset="UTF-8">
     <meta name="description" content="SolMusic HTML Template">
     <meta name="keywords" content="music, html">
@@ -51,94 +51,52 @@
         <li><a th:href="@{/likedMedia}">Favourite</a></li>
     </ul>
 </header>
+<!-- Header section end -->
 
-<!-- Category section -->
-<section class="category-section spad">
-    <div class="container-fluid">
-        <h2 style="margin-bottom:50px; margin-left:20px">Playlist</h2>
-        <div class="category-items">
+<!-- Player section -->
+<!--<section class="player-section set-bg" data-setbg="img/player-bg.jpg">-->
+    <div class="player-box">
+        <div class="tarck-thumb-warp">
+            <div class="tarck-thumb">
+                <img src="img/wave-thumb.jpg" th:src="@{img/wave-thumb.jpg}" alt=""/>
+            </div>
+        </div>
+        <div class="wave-player-warp">
             <div class="row">
-                <div th:each="key : ${topMedias.keySet()}" class="col-md-4">
-                    <div class="category-item">
-                        <img src="img/playlist/9.jpg" alt="">
-                        <div class="ci-text">
-                            <a th:href="@{/artist/get/{artistID}(artistID=${topMedias.get(key).artistID})}">
-                                <h4 th:text="${topMedias.get(key).firstname} + ' ' + ${topMedias.get(key).lastname}"></h4></a>
-                            <a th:href="@{/media/{mediaID}(mediaID=${key.mediaID})}"><p th:text="${key.name}"></p></a>
+                <div class="col-lg-8">
+                    <div class="wave-player-info">
+                        <h2 th:text="${media.name}"></h2>
+                        <div th:each="artist : ${artists}">
+                            <a th:href="@{/artist/get/{artistID}(artistID=${artist.artistID})}"><p
+                                    th:text="${artist.firstname} + ' ' + ${artist.lastname}"></p>
+                            </a>
                         </div>
                     </div>
                 </div>
-            </div>
-        </div>
-    </div>
-</section>
-<!-- Category section end -->
-
-<!-- Songs section  -->
-<section class="songs-section">
-    <div class="container">
-        <!-- song -->
-        <div th:each="key : ${medias.keySet()}" class="song-item">
-            <div class="row">
                 <div class="col-lg-4">
-                    <div class="song-info-box">
-                        <img src="img/songs/1.jpg" alt="">
-                        <div class="song-info">
-                            <a th:href="@{/artist/get/{artistID}(artistID=${medias.get(key).artistID})}">
-                                <h4 th:text="${medias.get(key).firstname} + ' ' + ${medias.get(key).lastname}"></h4></a>
-                            <a th:href="@{/media/{mediaID}(mediaID=${key.mediaID})}"><p th:text="${key.name}"></p></a>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-lg-6">
-                    <div class="single_player_container">
-                        <div class="single_player">
-                            <div class="jp-jplayer jplayer" data-ancestor=".jp_container_1"
-                                 data-url="music-files/1.mp3"></div>
-                            <div class="jp-audio jp_container_1" role="application" aria-label="media player">
-                                <div class="jp-gui jp-interface">
-
-                                    <!-- Player Controls -->
-                                    <div class="player_controls_box">
-                                        <button class="jp-prev player_button" tabindex="0"></button>
-                                        <button class="jp-play player_button" tabindex="0"></button>
-                                        <button class="jp-next player_button" tabindex="0"></button>
-                                        <button class="jp-stop player_button" tabindex="0"></button>
-                                    </div>
-                                    <!-- Progress Bar -->
-                                    <div class="player_bars">
-                                        <div class="jp-progress">
-                                            <div class="jp-seek-bar">
-                                                <div>
-                                                    <div class="jp-play-bar">
-                                                        <div class="jp-current-time" role="timer" aria-label="time">
-                                                            0:00
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="jp-duration ml-auto" role="timer" aria-label="duration">
-                                            <p th:text="${key.length}"></p>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-lg-2">
                     <div class="songs-links">
-                        <a th:href="@{/like/{mediaID}(mediaID=${key.mediaID})}"><img src="img/icons/p-1.png" alt=""></a>
-                        <a th:href="@{/media/download/{mediaID}(mediaID=${key.mediaID})}"><img
-                                src="img/icons/p-2.png" alt=""></a>
+                        <a href=""><img th:src="@{img/icons/p-1.png}" alt=""></a>
+                        <a href=""><img src="img/icons/p-2.png" alt=""></a>
+                        <a href=""><img src="img/icons/p-3.png" alt=""></a>
                     </div>
+                </div>
+            </div>
+            <div id="wavePlayer" class="clierfix">
+                <div id="audiowave" data-waveurl="music-files/8.mp3"></div>
+                <div id="currentTime"></div>
+                <div id="clipTime"></div>
+                <!-- Player Controls -->
+                <div class="wavePlayer_controls">
+                    <button class="jp-prev player_button" onclick="wavesurfer.skipBackward();"></button>
+                    <button class="jp-play player_button" onclick="wavesurfer.playPause();"></button>
+                    <button class="jp-next player_button" onclick="wavesurfer.skipForward();"></button>
+                    <button class="jp-stop player_button" onclick="wavesurfer.stop();"></button>
                 </div>
             </div>
         </div>
     </div>
-</section>
-<!-- Songs section end -->
+<!--</section>-->
+<!-- Player section end -->
 
 <!-- Footer section -->
 <footer class="footer-section">
@@ -181,7 +139,7 @@
                 </div>
             </div>
             <div class="col-xl-6 col-lg-5 order-lg-1">
-                <img src="img/logo.png" alt="">
+                <img th:src="@{/img/logo.png}" alt="">
                 <div class="copyright">
                     <!-- Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. -->
                     Copyright &copy;<script>document.write(new Date().getFullYear());</script>
@@ -202,16 +160,20 @@
 <!-- Footer section end -->
 
 <!--====== Javascripts & Jquery ======-->
-<script src="js/jquery-3.2.1.min.js"></script>
-<script src="js/bootstrap.min.js"></script>
-<script src="js/jquery.slicknav.min.js"></script>
-<script src="js/owl.carousel.min.js"></script>
-<script src="js/mixitup.min.js"></script>
-<script src="js/main.js"></script>
+<script th:src="@{js/jquery-3.2.1.min.js}"></script>
+<script th:src="@{/js/bootstrap.min.js}"></script>
+<script th:src="@{/js/jquery.slicknav.min.js}"></script>
+<script th:src="@{/js/owl.carousel.min.js}"></script>
+<script th:src="@{/js/mixitup.min.js}"></script>
+<script th:src="@{/js/main.js}"></script>
 
-<!-- Audio Player and Initialization -->
-<script src="js/jquery.jplayer.min.js"></script>
-<script src="js/jplayerInit.js"></script>
+<!-- Audio Players js -->
+<script th:src="@{/js/jquery.jplayer.min.js}"></script>
+<script th:src="@{/js/wavesurfer.min.js}"></script>
+
+<!-- Audio Players Initialization -->
+<script th:src="@{/js/WaveSurferInit.js}"></script>
+<script th:src="@{/js/jplayerInit.js}"></script>
 
 </body>
 </html>

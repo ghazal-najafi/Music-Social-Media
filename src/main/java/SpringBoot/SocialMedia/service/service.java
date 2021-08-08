@@ -12,10 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
 
-import java.io.IOException;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -144,9 +141,8 @@ public class service {
         return medias;
     }
 
-    public void addMedia(Media media) {
-        if (media != null)
-            mediaRepository.save(media);
+    public void addOrUpdateMedia(Media media) {
+        mediaRepository.save(media);
     }
 
     public boolean deleteMedia(int id) {
@@ -157,23 +153,6 @@ public class service {
         } else
             return false;
 
-    }
-
-    public void updateMedia(Media media) {
-        if (media.getMediaID() == null)
-            mediaRepository.save(media);
-        else {
-            Optional<Media> existingMedia = mediaRepository.findById(media.getMediaID());
-            if (existingMedia.isPresent()) {
-                Media newMedia = existingMedia.get();
-                newMedia.setName(media.getName());
-                newMedia.setGenre(media.getGenre());
-                newMedia.setPublishDate(media.getPublishDate());
-                newMedia.setLength(media.getLength());
-                newMedia.setScore(media.getScore());
-                mediaRepository.save(newMedia);
-            }
-        }
     }
 
     //-------------------------------artist----------------------------------------------
@@ -225,5 +204,7 @@ public class service {
         }
     }
 
-
+    public List<Media> getAllLikedMedia() {
+        return (List<Media>) mediaRepository.findAll();
+    }
 }

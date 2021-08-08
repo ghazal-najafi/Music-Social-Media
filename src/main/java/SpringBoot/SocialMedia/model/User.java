@@ -115,6 +115,7 @@ public class User {
     public void setLikeMedia(Media media) {
         if (!likeMedia.contains(media))
             likeMedia.add(media);
+        else likeMedia.remove(media);
     }
 
     public List<Media> getViewMedia() {
@@ -133,6 +134,7 @@ public class User {
     public void setFollowArtist(Artist artist) {
         if (!followArtist.contains(artist))
             followArtist.add(artist);
+        else followArtist.remove(artist);
     }
 
     @Override
